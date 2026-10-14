@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sample Training Record — Demo Only</title>
+<style>
+  :root { --ink:#172033; --muted:#5d687b; --line:#d8deea; --panel:#f5f7fb; --accent:#244b82; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:Arial,Helvetica,sans-serif; color:var(--ink); background:#eef1f6; }
+  header { background:#fff; border-bottom:1px solid var(--line); padding:22px 16px; text-align:center; }
+  header h1 { margin:0 0 6px; font-size:clamp(20px,4vw,30px); }
+  header p { margin:0; color:var(--muted); }
+  .warning { max-width:900px; margin:18px auto 0; padding:12px 16px; border:2px solid #a13c25; color:#842b19; background:#fff1ed; font-weight:800; text-align:center; letter-spacing:.04em; }
+  main { max-width:900px; margin:18px auto; padding:0 14px 30px; }
+  .card { background:#fff; border:1px solid var(--line); border-radius:12px; padding:20px; margin-bottom:16px; box-shadow:0 4px 14px #16213b0c; }
+  .card h2 { margin:0 0 16px; font-size:19px; }
+  .fields { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+  .field { border:1px solid var(--line); border-radius:8px; padding:12px; min-width:0; }
+  .label { display:block; color:var(--muted); font-size:12px; text-transform:uppercase; letter-spacing:.06em; margin-bottom:6px; }
+  .value { font-size:16px; font-weight:700; overflow-wrap:anywhere; }
+  .status { display:inline-block; border-radius:999px; padding:5px 10px; background:#fff0d5; color:#7a4b00; font-size:12px; font-weight:800; }
+  .qrrow { display:flex; gap:20px; align-items:center; flex-wrap:wrap; }
+  #qrcode { min-width:180px; min-height:180px; padding:10px; background:#fff; border:1px solid var(--line); display:flex; align-items:center; justify-content:center; }
+  #qrcode img, #qrcode canvas { max-width:100%; height:auto; }
+  button { background:var(--accent); color:white; border:0; padding:11px 15px; border-radius:8px; font-weight:700; cursor:pointer; margin:4px 6px 4px 0; }
+  button.secondary { background:#e8edf6; color:#1c2e4b; }
+  input { width:100%; padding:11px; border:1px solid #bfc9da; border-radius:7px; font-size:14px; margin:7px 0 10px; }
+  .small { color:var(--muted); font-size:13px; line-height:1.5; }
+  footer { text-align:center; color:var(--muted); padding:10px 18px 30px; font-size:12px; }
+  @media(max-width:600px) { .fields { grid-template-columns:1fr; } .card { padding:15px; } }
+  @media print { body { background:#fff; } header, .card { box-shadow:none; } .controls, #qrhelp { display:none; } .warning { margin:10px auto; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Training Record Details</h1>
+  <p>Personal demo page · not an official verification service</p>
+</header>
+<div class="warning">DEMO / SAMPLE ONLY — NOT A GOVERNMENT CERTIFICATE OR OFFICIAL VERIFICATION</div>
+<main>
+  <section class="card">
+    <h2>Record information</h2>
+    <div class="fields">
+      <div class="field"><span class="label">Name</span><div class="value">AKHILESH K</div></div>
+      <div class="field"><span class="label">Serial number (Sl. No.)</span><div class="value">E300832011213</div></div>
+      <div class="field"><span class="label">Father's name</span><div class="value">KUMARN</div></div>
+      <div class="field"><span class="label">Institute</span><div class="value">ITI Kozhijampara</div></div>
+      <div class="field"><span class="label">Trade / course</span><div class="value">Electronics Engineering</div></div>
+      <div class="field"><span class="label">Course duration</span><div class="value">2 years</div></div>
+      <div class="field"><span class="label">Certificate number (user-entered)</span><div class="value">318220000008631</div></div>
+      <div class="field"><span class="label">Certificate issue date (user-entered)</span><div class="value">10 Mar 2022</div></div>
+      <div class="field"><span class="label">Status</span><div class="value"><span class="status">User-entered: Certified — Yes</span></div></div>
+    </div>
+    <p class="small">The information above was entered by the page creator and has not been authenticated against any government or institute database.</p>
+  </section>
+
+  <section class="card">
+    <h2>QR code for this demo page</h2>
+    <div class="qrrow">
+      <div id="qrcode"><span class="small">QR code will appear after the page is published online.</span></div>
+      <div style="flex:1;min-width:230px">
+        <p class="small">After you publish this page online, paste its public HTTPS address below and press <b>Generate QR</b>. The QR code will then open this page when scanned.</p>
+        <div class="controls">
+          <label for="pageurl"><b>Published page URL</b></label>
+          <input id="pageurl" type="url" placeholder="https://your-site.example/akhilesh-demo/">
+          <button onclick="makeQR()">Generate QR</button>
+          <button class="secondary" onclick="downloadQR()">Download QR PNG</button>
+          <button class="secondary" onclick="window.print()">Print page</button>
+        </div>
+        <p id="qrhelp" class="small">Do not use an official government domain or present this demo as an official certificate.</p>
+      </div>
+    </div>
+  </section>
+</main>
+<footer>Clearly marked demonstration record · No official verification is performed.</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+let qr;
+function makeQR() {
+  const url = document.getElementById('pageurl').value.trim();
+  const box = document.getElementById('qrcode');
+  if (!url || !/^https:\\/\\//i.test(url)) {
+    alert('Enter the published page address starting with https://');
+    return;
+  }
+  if (typeof QRCode === 'undefined') {
+    alert('QR library could not load. Connect to the internet and refresh this page.');
+    return;
+  }
+  box.innerHTML = '';
+  qr = new QRCode(box, {text:url, width:200, height:200, correctLevel:QRCode.CorrectLevel.M});
+}
+function downloadQR() {
+  const box = document.getElementById('qrcode');
+  const canvas = box.querySelector('canvas');
+  const img = box.querySelector('img');
+  let data = canvas ? canvas.toDataURL('image/png') : (img ? img.src : '');
+  if (!data) { alert('Generate the QR code first.'); return; }
+  const a = document.createElement('a');
+  a.href = data; a.download = 'akhilesh-demo-page-qr.png'; a.click();
+}
+</script>
+</body>
+</html>
